@@ -1,0 +1,81 @@
+
+<!doctype html>
+<html id="entire_document" >
+
+	<p>
+	started: 2025-02-12: DAV
+	<p>
+	A little quine in JavaScript by David Cary.
+
+	<!--
+		print out to both console.log() and a textarea?
+	-->
+<javascript>
+
+// Some approaches to multi-line strings:
+// ES20xx adds String.raw with template literal:
+const d_new = String.raw`
+	some text
+	\n is not a newline.`;
+// ES6 introduces template literal, delimited by backticks:
+const d = `
+	some text
+	another line of text
+	\n is an extra newline.
+`;
+// Inside a normal template literal,
+// you can escape in at least 3 ways
+// the 3 special characters (backtick, backslash, dollarsign):
+// use backslash escapes: `\``, `\\`, `\$`.
+// use a normal string inside a placeholder: `${'`'} ${'\\'} ${'$'}`
+// use special variable inside placeholder:
+// bt = '`'; bs = '\\'; ds = '$'; string = `${bt} ${bs} ${ds} `;
+// ES5 and before: escape the literal newline with backtick
+// (and, if you want a newline there in the final string, use "\n").
+const d_old1 = "\
+	some text\n\
+	another line of text\n\
+	";
+// ES5 and before: string concatenation
+// (and, if you want a newline there in the final string, use "\n").
+const d_old2 = "" +
+	"some text\n" +
+	"another line of text\n" +
+	"";
+// ES5 and before: array join
+// (automatically inserting newlines)
+const d_old3 = [
+	"some text",
+	"another line of text",
+	""
+	].join('\n');
+eval(d);
+
+
+// Another weird trick: using .toString on a function:
+function quine(){
+// lots of stuff
+	let a = 42 + 1;
+// ... more stuff ...
+/* yet more stuff
+*/}
+
+console.log( quine.toString() );
+console.log( quine.toString().slice(14,-3) );
+// vanilla JavaScript without jQuery:
+console.log( document.getElementById('entire_document').innerHtml );
+console.log( document.getElementById('entire_document').innerText ); // textContent is better (?)
+console.log( document.getElementById('entire_document').textContent );
+// jQuery:
+console.log( $('entire_document').html() );
+
+
+console.log( JSON.stringify( d ) );
+
+</javascript>
+
+</html>
+
+
+
+
