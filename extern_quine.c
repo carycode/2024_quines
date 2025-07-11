@@ -9,12 +9,12 @@
 // Unlike most C quines, this
 // delays the dna string to the *end* of the program.
 
-// dna string
-extern char d[];
-
 #include <stdio.h> // for puts() and putchar()
 #include <assert.h> // for assert()
 #include <ctype.h> // for assert(isdigit(...))
+
+// dna string
+extern char d[];
 
 int main(void){
 
@@ -22,7 +22,7 @@ int main(void){
 #if 0
     puts( d+22 );
 #else
-    for(int i = 43; d[i]; i++){
+    for(int i = 44; d[i]; i++){
         char c = d[i];
         if('Z' == c){
             i++;
@@ -82,25 +82,34 @@ int main(void){
 // dna string
 char d[]=
 // start with a teleomere of bytes we need that must be escaped
-"\n" "\\" "\"" "n"
+"\n" "\\" "\"" "n" "Z"
 // citation and attribution (analogous to junk dna?)
 " 2025-07-10: ANSI C quine by David Cary"
 // then more-or-less the text of the executable quine
 "#include <stdio.h>Z0"
-"extern char d[];"
-"int main(void){"
-"   puts( d+22 );"
-"   putchar( d[2] );"
-"   puts( d+3 );"
-"   putchar( d[2] );"
-"   putchar( ';' );"
-"}"
-"char d[1000]=Z2"
+"extern char d[];Z0"
+"int main(void){Z0"
+"    for(int i = 43; d[i]; i++){Z0"
+"        char c = d[i];Z0"
+"        if('Z4' == c){Z0"
+"            i++;Z0"
+"            c = d[i] - '0';Z0"
+"            putchar(d[c]);Z0"
+"        }else{Z0"
+"            putchar(c);Z0"
+"        };Z0"
+"    };Z0"
+"    puts(d+3);Z0"
+"    puts( Z2Z1Z2;Z2 );Z0"
+"}Z0"
+"char d[]=Z0Z2"
 // then reconstruct the above teleomere
 "Z1Z3"
 "Z1Z1"
 "Z1Z2"
 "";
+
+
 
 
 
