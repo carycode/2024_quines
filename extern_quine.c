@@ -12,7 +12,7 @@
 // dna string
 extern char d[];
 
-#include <stdio.h> // for puts()
+#include <stdio.h> // for puts() and putchar()
 #include <assert.h> // for assert()
 #include <ctype.h> // for assert(isdigit(...))
 
@@ -66,7 +66,7 @@ int main(void){
     };
 #else
     // the above should have *also* expanded the teleomere at the beginning of the string
-    // copy string (should be no escaped characters after the teleomere)
+    // copy post-teleomere string (should be no escaped characters after the teleomere)
     puts(d+3);
 #endif
 
@@ -97,7 +97,9 @@ char d[]=
 "}"
 "char d[1000]=Z2"
 // then reconstruct the above teleomere
-"Z0Z1Z2"
+"Z1Z3"
+"Z1Z1"
+"Z1Z2"
 "";
 
 
