@@ -29,22 +29,22 @@ int main(void){
 
     // start overwriting just *past* the NULL byte at the end of the initialized data
     char * dest = d + strlen(d);
-    const char * start_output = dest;
+    const char * const start_output = dest;
 
     // we leave that NULL byte for this test:
-    for(;*d;){
-        int offset = get_i(d);
-        int length = get_i(d);
-        int literals = get_i(d);
+    for(int i; d[i]; i++){
+        int offset = get_i(d+i);
+        int length = get_i(d+i);
+        int literals = get_i(d+i);
         // FUTURE: consider forward offsets from original start of dna string
         // rather than backward offsets from current position in output string.
         // FUTURE: consider using memccpy() ?
         // void *memcpy( void * dest, cost void * src, size_t n );
 #define MIN_COPY_ITEM 6 /* FIXME: probably wrong */
-        memcpy( dest, d-offset, length );
-        d += MIN_COPY_ITEM; dest += length;
-        memcpy( dest, d, literals );
-        d += literals; dest += literals;
+        memcpy( dest, d+i-offset, length );
+        i += MIN_COPY_ITEM; dest += length;
+        memcpy( dest, d+i, literals );
+        i += literals; dest += literals;
     };
     puts(start_output);
 
