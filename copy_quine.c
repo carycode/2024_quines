@@ -63,10 +63,17 @@ char d[1000]=
 // followed by octal digits
 "01234567"
 // then more-or-less the text of the executable quine
+// as a series of
+// long literals with null copies (length=0 copies)
+// zero-length literals with length-1 copies for the newlines and other "escaped" bytes
+// The above are all that's necessary, but
+// perhaps we'll occasionally "optimize"
+// with longer copies or combined copy+literal or both.
 
 "// 2025-07-08: ANSI C quine by David Cary"
+"#include <stdio.h>"
+// FIXME: literal newline here
 "extern char d[];"
-"#include <stdio.h>\n"
 "int main(void){"
 "   puts( d+22 );"
 "   putchar( d[2] );"
@@ -75,6 +82,11 @@ char d[1000]=
 "   putchar( ';' );"
 "}"
 "char d[1000]="
+// regenerate teleomere with a bunch of length=1 copies
+// offset = +2, length = 1
+// regenerate entire dna string with a length=strlen(d) copy
+// regenerate ending quote with
+// perhaps a length=1 copy of the quote, and a length=1 literal semicolon.
 "";
 
 
