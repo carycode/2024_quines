@@ -9,10 +9,14 @@
 // distinct "regenerate dna string" phase and
 // distinct "regenerate executable source" phases.
 
+#include <stdio.h> // for puts()
+#include <string.h> // for memcpy()
+#include <assert.h> // for assert()
+#include <ctype.h> // for assert(isdigit(...))
+
 // dna string
 extern char d[];
 
-#include <stdio.h> // for puts()
 
 int get_i(char * s){
     assert(0);
@@ -32,8 +36,15 @@ int main(void){
         int offset = get_i(d);
         int length = get_i(d);
         int literals = get_i(d);
-        copy( d - offset, length, ....);
-        copy( d, literals, ...);
+        // FUTURE: consider forward offsets from original start of dna string
+        // rather than backward offsets from current position in output string.
+        // FUTURE: consider using memccpy() ?
+        // void *memcpy( void * dest, cost void * src, size_t n );
+#define MIN_COPY_ITEM 6 /* FIXME: probably wrong */
+        memcpy( dest, d-offset, length );
+        d += MIN_COPY_ITEM; dest += length;
+        memcpy( dest, d, literals );
+        d += literals; dest += literals;
     };
     puts(start_output);
 
@@ -53,6 +64,13 @@ int main(void){
 #endif
 
 }
+
+// FUTURE: consider perhaps
+// modifying the DNA string on the first or second pass.
+// Such as, for example, writing a NULL byte at the end of each line
+// and using puts() to emit each line, including the newline.
+// That likely requires emitting or at least copying
+// the original value of the dna string before those edits.
 
 // dna string
 char d[1000]=
