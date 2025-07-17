@@ -20,7 +20,7 @@
 #include <stdlib.h> // for strtol()
 
 // dna string
-extern char d[];
+extern char dna[];
 
 
 int fixed_width_get_i(char * s){
@@ -47,16 +47,56 @@ int get_i(char * s){
 int main(void){
 
     // start overwriting just *past* the NULL byte at the end of the initialized data
-    char * dest = d + strlen(d);
+    char * dest = dna + strlen(dna);
+    char * d = dna;
     const char * const start_output = dest;
 
     // we leave that NULL byte for this test:
     for(int i=3; d[i]; i++){
-#if 1
+        {
+            int offset = d[i++] - 'A';
+            assert( 0 <= offset );
+            char * end = 0;
+            // long strtol(char * str, char ** end, int base)
+            // strtol sets "end" to point to the character *following*
+            // the last valid numeric character in the string.
+            int length = strtol(d+i, &end, 8);
+            int delta_i = end - (d+i);
+            i += delta_i;
+            // assume we've hit the quote character, not the end of the string
+            // (also we're assuming the quote character is not an octal digit).
+            assert( d[i] );
+            // mempcpy() would also work.
+            //
+#define forward_offset 1
+#if 0 // forward_offset
+            memcpy( dest, d+offset, length ); 
+#else // backward offset
+            memcpy( dest, d+i-offset, length );
+#endif
+            dest += length;
+        };
+        {
+            const char quote = d[i++];
+            // void *memccpy(void *dest, const void *src, int c, size_t n);
+            // copy up to n bytes between two memory areas, which must not overlap,
+            // stopping when byte c is found.
+            // memccpy() returns a pointer to the next character in dest after c,
+            // or NULL if c was not found in the first n characters of src.
+            char * end = 0;
+            end = memccpy( dest, d+i, quote, 1000 );
+            int delta_i = end - dest;
+            i += delta_i;
+            dest += delta_i;
+            assert( quote == d[i] );
+            i++;
+        };
+#if 0
         int offset = get_i(d+i);
         int length = get_i(d+i);
         int literals = get_i(d+i);
-#else
+#endif
+#if 0
         int offset = 0;
         int length = 0;
         int literals = 0;
@@ -74,7 +114,7 @@ int main(void){
         i+= consumed;
         length -= 'A';
         misc -= 'A';
-#endif
+
         // FUTURE: consider forward offsets from original start of dna string
         // rather than backward offsets from current position in output string.
         // FUTURE: consider using memccpy() ?
@@ -84,6 +124,7 @@ int main(void){
         i += MIN_COPY_ITEM; dest += length;
         memcpy( dest, d+i, literals );
         i += literals; dest += literals;
+#endif
     };
     puts(start_output);
     // FUTURE: is better have an explicit literal count?
@@ -138,7 +179,7 @@ int main(void){
 // the original value of the dna string before those edits.
 
 // dna string
-char d[1000]=
+char dna[1000]=
 // start with a teleomere of bytes we need that must be escaped
 "\n\\"
 // followed by an unnecessarily clever quote

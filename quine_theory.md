@@ -11,12 +11,35 @@ In particular,
 I prefer quines that don't depend on ASCII
 or any other particular mapping from character to numeric code.
 (In particular,
+the "basic source character set" defined by ANSI C,
 the "Basic Execution Character Set" defined by ANSI C
 and
 one of its supersets, the
 "Portable Character Set" defined by POSIX
 is a "mathematical set" of characters
 without any particular numeric value encoding.
+Related:
+"C : source , execution , basic , and extended character sets "
+http://twiserandom.com/c/c-source-execution-basic-and-extended-character-sets/index.html
+"What are the differences between the various character sets defined in the C++ standard?"
+https://stackoverflow.com/questions/3768363/what-are-the-differences-between-the-various-character-sets-defined-in-the-c-s
+"The numeric values of these characters are implementation-defined."
+https://www.oreilly.com/library/view/c-in-a/059600298X/ch01s04.html
+"The basic source character set consists of 96 characters ...
+[including] the space character [and] 91 graphical characters"
+https://timsong-cpp.github.io/cppwp/n4659/lex.charset
+The "basic source character set" has been renamed the "basic character set",
+and the "basic execution character set" has been renamed the "basic literal character set"
+according go
+"C++ Character sets and encodings"
+https://en.cppreference.com/w/cpp/language/charset.html
+.
+DAV often ponders an alternate history
+where C supported 6-bit "bytes" character sets
+as were popular in 36-bit and 18-bit computers
+This seems to require only a small amount of loosening:
+* allow variable-width "characters" in literal strings
+(which recent C compilers already do to support UTF-8).
 ).
 
 
@@ -118,7 +141,7 @@ ASCII defines 128 (0x80) total "characters":
 
 0x00 .. 0x1F: control codes
 0x20 : space character: isprint() but not isgraph().
-0x21 .. 0x7E: the isprint() and isgraph() characters
+0x21 .. 0x7E: the 94 isgraph() characters (of the 95 isprint characters)
 0x7F : the "del" control code.
 
 Any byte or character can be represented in a C string
