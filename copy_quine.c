@@ -46,16 +46,24 @@ int get_i(char * s){
 
 int main(void){
 
+    {
+        int len = strlen(dna);
+        printf( "dna length: %i (octal %o ).\n", len, len ); // debug
+        assert( 'y' == dna[41] );
+    }
+
     // start overwriting just *past* the NULL byte at the end of the initialized data
-    char * dest = dna + strlen(dna);
+    char * dest = dna + strlen(dna) + 1;
     char * d = dna;
     const char * const start_output = dest;
 
     // we leave that NULL byte for this test:
-    for(int i=3; d[i]; i++){
+    for(int i=42; d[i]; i++){
         {
+            printf("copy item: (%c)[%.6s] \n", *(d+i-1), d+i); // debug
             int offset = d[i++] - 'A';
             assert( 0 <= offset );
+            assert( offset <= 25 );
             char * end = 0;
             // long strtol(char * str, char ** end, int base)
             // strtol sets "end" to point to the character *following*
@@ -68,8 +76,8 @@ int main(void){
             assert( d[i] );
             // mempcpy() would also work.
             //
-#define forward_offset 1
-#if 0 // forward_offset
+            printf("length: %i; offset: %i\n", length, offset); // debug
+#if 1 // forward_offset
             memcpy( dest, d+offset, length ); 
 #else // backward offset
             memcpy( dest, d+i-offset, length );
@@ -78,18 +86,29 @@ int main(void){
         };
         {
             const char quote = d[i++];
+            printf("quote: %c; literal: %.5s... \n", quote, d+i ); // debug
             // void *memccpy(void *dest, const void *src, int c, size_t n);
             // copy up to n bytes between two memory areas, which must not overlap,
             // stopping when byte c is found.
             // memccpy() returns a pointer to the next character in dest after c,
             // or NULL if c was not found in the first n characters of src.
+            // Apparently the byte c is the last byte copied.
             char * end = 0;
             end = memccpy( dest, d+i, quote, 1000 );
-            int delta_i = end - dest;
-            i += delta_i;
-            dest += delta_i;
+            assert( quote == end[-1] );
+            const int delta_i = end - dest;
+            // The smallest possible value for this delta_i 
+            // (when the "empty string")
+            // (when src points directly at a byte c),
+            // is delta_i == 1.
+            printf("dest: [%s]; delta_i: %i \n", dest, delta_i ); // debug
+            printf("literal: %.5s...; end-quote: %c\n", d+i, d[i+delta_i-1] ); // debug
+            assert( quote == d[i+delta_i-1] );
+            printf("start_output: [%s]\n", start_output ); // debug
+            i += delta_i-1; // make d[i] refer to the end-quote
+            dest += delta_i-1; // make dest point at the end-quote, so quote will be overwritten
             assert( quote == d[i] );
-            i++;
+            assert( quote == dest[0] );
         };
 #if 0
         int offset = get_i(d+i);
@@ -184,8 +203,6 @@ char dna[1000]=
 "\n\\"
 // followed by an unnecessarily clever quote
 "\""
-// followed by octal digits
-"01234567"
 // then more-or-less the text of the executable quine
 // as a series of
 // long literals with null copies (length=0 copies)
@@ -194,23 +211,34 @@ char dna[1000]=
 // perhaps we'll occasionally "optimize"
 // with longer copies or combined copy+literal or both.
 
-"// 2025-07-08: ANSI C quine by David Cary"
+" 2025-07-08: ANSI C quine by David Cary"
+"A1Z"
+"ZA1Z"
 "#include <stdio.h>"
-// FIXME: literal newline here
+"ZA1Z" // literal newline required after #include
 "extern char d[];"
+"ZA1Z"
 "int main(void){"
-"   puts( d+22 );"
-"   putchar( d[2] );"
-"   puts( d+3 );"
-"   putchar( d[2] );"
-"   putchar( ';' );"
+"ZA1Z"
+"   ..."
+"ZA1Z"
+"    puts(start_output);"
+"ZA1Z"
 "}"
+"ZA1Z"
 "char d[1000]="
+"ZA1Z"
+"ZC1Z" // begin quote
 // regenerate teleomere with a bunch of length=1 copies
+
 // offset = +2, length = 1
 // regenerate entire dna string with a length=strlen(d) copy
 // regenerate ending quote with
 // perhaps a length=1 copy of the quote, and a length=1 literal semicolon.
+"ZC1Z" // end quote
+";" // final semicolon
+"ZA1Z" // final newline, with zero-length literal.
+"Z"
 "";
 
 
