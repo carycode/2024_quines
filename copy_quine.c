@@ -59,6 +59,21 @@ int main(void){
 
     // we leave that NULL byte for this test:
     for(int i=42; d[i]; i++){
+        // First read a relative offset,length item
+        // and copy that into the dest string
+        // This is used for
+        // (a) the self-referential copy that copies the bulk of the dna string
+        // except for a short initial teleomere
+        // (which cannot be a simple literal copy)
+        // (b) bytes that cannot represent themselves
+        // in the bulk of the dna string (double-quotes, backslashes, etc.)
+        // both inside the dna string (the short initial telomere)
+        // (in other quines, handled by a "regenerate dna string" section)
+        // *and* also in the executable source
+        // (in other quines, handled by a "regenerate executable source" section)
+        // .
+        // and optionally could be used for
+        // (c) data compression, expanding repeated sections of the executable source.
         {
             printf("copy item: (%c)[%.6s] \n", *(d+i-1), d+i); // debug
             int offset = d[i++] - 'A';
@@ -84,6 +99,11 @@ int main(void){
 #endif
             dest += length;
         };
+        // Second, read a "literal string" and emit it;
+        // DAV has designed this little language / domain specific language
+        // to avoid unnecessary restrictions on the content of the string
+        // by allowing each literal string
+        // to use a different quote character at the beginning and end of the string.
         {
             const char quote = d[i++];
             printf("quote: %c; literal: %.5s... \n", quote, d+i ); // debug
