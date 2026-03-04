@@ -17,8 +17,8 @@
 // dna string
 extern char *d[];
 
-int main(void){
 #define emit(x) printf(d[4], d[x]);
+int main(void){
 
     // reconstruct pre-string executable
     // Generally alternate between printing a string
@@ -34,9 +34,12 @@ int main(void){
         int special = (s[0] - '0');
         // printf("%s", d[special]); // newline, quote, or backslash
         printf(d[4], d[special]); // newline, quote, or backslash
-#else
+#elseif 0
         printf(d[4], d[i]+1); // skip over the special
         printf(d[4], d[d[i][0]-'0']); // newline, quote, or backslash
+#else
+        printf(d[4], d[i]+1); // skip over the special
+        emit(d[i][0]-'0'); // newline, quote, or backslash
 #endif
     };
 
@@ -59,11 +62,15 @@ int main(void){
     puts( d[5] );
 #else
     // loop until we get to the 0 (null pointer) marking the end of the list 
-    for(int i = 4; d[i]; i++){
+    for(int i=3; d[i]; i++){
 #if 0
         putchar('"'); // begin-quote
-#else
+#elseif 0
+        printf(d[4],d[0]); // begin-quote
+#elseif 0
         putchar(d[0][0]); // begin-quote
+#else
+        emit(0); // begin-quote
 #endif
 
 #if 0
@@ -73,10 +80,15 @@ int main(void){
 #elseif 0
         printf(d[4], d[i]);
         puts( "\","); // end-quote, comma, and also emits newline
-#else
+#elseif 0
         printf(d[4], d[i]);
         putchar(d[0][0]); // end-quote
-        puts(","); // comma and newline
+        puts(d[3]); // comma and newline
+#else
+        emit(i); // piece of dna string (assumes nothing needs to be expanded)
+        emit(0); // end-quote
+        emit(3); // comma
+        emit(1); // newline
 #endif
     };
     // emit null pointer, ending bracket of list, and post-string executable 
@@ -94,28 +106,40 @@ char *d[]={
 "\n", // 1 newline
 "\\", // 2 backslash
 // from here on, we avoid using escape sequences ...
-"", // 3 -- FIXME: unnecessary
+",", // 3
 "%s", // 4
 "0};", // 5
 // citation and attribution (analogous to junk dna?)
-" 2025-07-10: ANSI C quine by David Cary", // 6
+"2025-07-10: ANSI C quine by David Cary", // 6
 // then more-or-less the text of the executable quine
 "1#include <stdio.h>", // 7
 "1extern char *d[];",
+"1#define emit(x) printf(d[4], d[x]);",
 "1int main(void){",
 "1    for(int i=7; d[i]; i++){",
+/*
 "1        char *s = d[i];",
 "1        printf(d[4], s+1);",
 "1        int x = s[0] - '0';",
 "1        printf(d[4], d[x]);",
+*/
+"1        printf(d[4], d[i]+1);",
+"1        emit(d[i][0]-'0');",
 "1    };",
-"1    for(int i=4; d[i]; i++){",
+"1    for(int i=3; d[i]; i++){",
+/*
 "1        putchar(d[2][0]);"
 // "1        char *s = d[i];",
 "1        printf(d[4], d[i]);",
 "0        puts(",
 "0,",
 "1);",
+*/
+"1        emit(0);",
+"1        emit(i);",
+"1        emit(0);",
+"1        emit(3);",
+"1        emit(1);",
 "1    };",
 "1    puts(d[5]);",
 "1}",
